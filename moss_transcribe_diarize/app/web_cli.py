@@ -38,7 +38,7 @@ def main() -> None:
 
     args = parse_args()
     app = create_app(
-        model_path=Path(args.model).expanduser(),
+        model_path=args.model,
         runs_dir=Path(args.runs_dir).expanduser(),
         device=args.device,
         dtype=args.dtype,

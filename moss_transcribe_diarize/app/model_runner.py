@@ -103,7 +103,11 @@ class ModelRunner:
         device: str = "auto",
         dtype: str = "bf16",
     ):
-        self.model_path = str(Path(model_path).expanduser())
+        model_value = str(model_path)
+        if "/" in model_value and not Path(model_value).expanduser().exists():
+            self.model_path = model_value
+        else:
+            self.model_path = str(Path(model_value).expanduser())
         self.device_name = device
         self.dtype_name = dtype
         self._model = None
