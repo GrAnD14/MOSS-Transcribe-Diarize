@@ -1,19 +1,14 @@
-# MOSS-Transcribe-Diarize: Windows Launch Improvements
+# Windows Launch Improvements for MOSS-Transcribe-Diarize
 
-This repository is based on [OpenMOSS-Team/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize).
+This repository is based on the original [OpenMOSS-Team/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize) project.
 
-## Upstream Project
+The original model and upstream codebase are developed by the OpenMOSS team and its contributors. This repository retains the upstream documentation and Apache License 2.0.
 
-The original transcription and speaker diarization project was developed by the OpenMOSS team and its contributors. This repository preserves the upstream project and its licensing and attribution notices.
+## My Contributions
 
-## My Changes
+- Updated model path handling to support Hugging Face repository IDs in the subtitle web application.
+- Added `run_transcript.bat` to simplify launching the local web interface on Windows.
 
-- Updated model path handling to support Hugging Face repository IDs.
-- Added a Windows batch script for launching the local web interface.
-- Added project-specific documentation and Git ignore rules.
+These changes focus on Windows usability. They do not imply authorship of the original model, its weights, or the upstream codebase.
 
-These changes are intended to simplify local setup and launching on Windows. They do not imply authorship of the original model or the upstream codebase.
-
-## License
-
-The upstream project is distributed under the Apache License 2.0. See the `LICENSE` file for the full license text and applicable conditions.
+For the original project, model details, research, and usage instructions, see the documentation below.
