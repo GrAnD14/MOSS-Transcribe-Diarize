@@ -259,30 +259,56 @@ uploadBtn.addEventListener('click', async () => {
     await startRerunDraft();
     return;
   }
-  const file = fileInput.files[0];
-  if (!file) return;
-  const form = new FormData();
-  form.append('file', file);
-  form.append('prompt', promptInput.value);
-  if (maxNewTokensInput.value) form.append('max_new_tokens', maxNewTokensInput.value);
-  if (maxLenInput.value) form.append('max_len', maxLenInput.value);
-  form.append('decoding', decodingSelect.value);
-  if (temperatureInput.value) form.append('temperature', temperatureInput.value);
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) return;
+
   uploadBtn.disabled = true;
+  fileInput.disabled = true;
   advancedDetails.open = false;
   clearImportError();
-  showProcessingPlaceholder(file.name);
-  const res = await fetch(apiUrl('api/jobs'), { method: 'POST', body: form });
-  const job = await res.json();
-  uploadBtn.disabled = false;
-  if (!res.ok) {
-    setImportError(job, 'errors.uploadFailed');
-    showImportView({ preserveError: true });
-    return;
+
+  const createdJobs = [];
+  const failures = [];
+  showProcessingPlaceholder(files.length === 1 ? files[0].name : `${files.length} files`);
+
+  for (const [index, file] of files.entries()) {
+    processNameEl.textContent = `${index + 1}/${files.length}: ${file.name}`;
+    processMetaEl.textContent = `Uploading ${index + 1} of ${files.length}...`;
+
+    const form = new FormData();
+    form.append('file', file);
+    form.append('prompt', promptInput.value);
+    if (maxNewTokensInput.value) form.append('max_new_tokens', maxNewTokensInput.value);
+    if (maxLenInput.value) form.append('max_len', maxLenInput.value);
+    form.append('decoding', decodingSelect.value);
+    if (temperatureInput.value) form.append('temperature', temperatureInput.value);
+
+    try {
+      const res = await fetch(apiUrl('api/jobs'), { method: 'POST', body: form });
+      const job = await res.json();
+      if (!res.ok) {
+        failures.push(`${file.name}: ${job.detail || res.statusText}`);
+        continue;
+      }
+      createdJobs.push(job);
+    } catch (error) {
+      failures.push(`${file.name}: ${error.message || error}`);
+    }
   }
-  currentJob = job;
+
+  uploadBtn.disabled = false;
+  fileInput.disabled = false;
+
   await refreshJobs({ keepSelection: true });
-  await selectJob(job.id);
+  if (createdJobs.length) {
+    await selectJob(createdJobs[createdJobs.length - 1].id);
+  } else {
+    showImportView();
+  }
+
+  if (failures.length) {
+    window.alert(`Uploaded ${createdJobs.length} of ${files.length} files.\\n\\nFailed:\\n${failures.join('\\n')}`);
+  }
 });
 
 saveBtn.addEventListener('click', async () => {
