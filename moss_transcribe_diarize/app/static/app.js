@@ -307,7 +307,7 @@ uploadBtn.addEventListener('click', async () => {
   }
 
   if (failures.length) {
-    window.alert(`Uploaded ${createdJobs.length} of ${files.length} files.\\n\\nFailed:\\n${failures.join('\\n')}`);
+    window.alert(`Uploaded ${createdJobs.length} of ${files.length} files.\n\nFailed:\n${failures.join('\n')}`);
   }
 });
 
